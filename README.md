@@ -18,5 +18,5 @@ This is a theme for [conky](https://github.com/brndnmtthws/conky) based on defau
 (Pay attention to the time)
 ## Installation
 
-- Copy Neon foder to "/home/username/.config/conky" (If the folder does not exist, create it.)
+- Copy "Neon" foder to "/home/username/.config/conky" (If the folder does not exist, create it.)
 - Make start.sh executable, run it
