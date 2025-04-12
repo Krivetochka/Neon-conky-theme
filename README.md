@@ -8,7 +8,7 @@ This is a theme for [conky](https://github.com/brndnmtthws/conky) based on defau
 
 - Automatic schedule change depending on the day of the week
 - Separate schedule for even and odd week (not yet automated)
-- Automatic display of the current recess and auto-hiding of the schedule if the lessons are over
+- Automatic display of the current recess and auto-hiding the schedule if the lessons are over
 ## Screenshots
 
 ![App Screenshot](https://i.ibb.co/Wpjd94xc/Neon.png/468x300?text=App+Screenshot+Here)
@@ -18,5 +18,6 @@ This is a theme for [conky](https://github.com/brndnmtthws/conky) based on defau
 (Pay attention to the time)
 ## Installation
 
-- Copy "Neon" foder to "/home/username/.config/conky" (If the folder does not exist, create it.)
+- Install [conky](https://github.com/brndnmtthws/conky)
+- Copy "Neon" foder to "/home/username/.config/conky" (If the folders does not exist, create them.)
 - Make start.sh executable, run it
