@@ -1,81 +1,82 @@
 #!/bin/bash
-# Начало пользовательского конфига
+# Start of user config
 
-# Шаблон расписания: "Название пары|HH:MM-HH:MM|номер кабинета"
+# Schedule template: "Class name|HH:MM-HH:MM|Classroom number"
 
-# mon – понедельник
-# tue – вторник
-# wed – среда
-# thu – четверг
-# fri – пятница
-# sat – суббота
-# sun – воскресенье
+# mon – Monday
+# tue – Tuesday
+# wed – Wednesday
+# thu – Thursday
+# fri – Friday
+# sat – Saturday
+# sun – Sunday
 
-# _up - верхняя неделя; _down - нижняя(четная, нечетная в некоторых вузах); оставьте только shedule_деньнедели, если смена недель не требуется
+# _up - upper week; _down - lower (even, or odd in some universities); leave only schedule_weekday if week switching is not needed
 
-# верхняя неделя
+# Example of a schedule:
+# upper week
 schedule_mon_up=(
-  "Физика|11:50-13:20|234"
+  "Physics|11:50-13:20|234"
 )
 
 schedule_tue_up=(
-  "Математика|08:30-10:00|223"
-  "Химия|10:10-11:40|223"
-  "Биология|11:50-13:20|223"
-  "География|13:50-15:20|345"
-  "Физкультура|17:10-18:40|Зал 2"
+  "Math|08:30-10:00|223"
+  "Chemistry|10:10-11:40|223"
+  "Biology|11:50-13:20|223"
+  "Geography|13:50-15:20|345"
+  "P.E.|17:10-18:40|Hall 2"
 )
 
 schedule_wed_up=(
-  "История|11:50-13:20|401"
-  "Литература|17:10-18:40|Вебинар"
+  "History|11:50-13:20|401"
+  "Literature|17:10-18:40|Web"
 )
 
 schedule_thu_up=(
-  "Математика|10:10-11:40|94"
-  "Физика|11:50-13:20|94"
-  "Химия|13:50-15:20|94"
-  "Физкультура|17:10-18:40|Зал 1"
+  "Math|10:10-11:40|94"
+  "Physics|11:50-13:20|94"
+  "Chemistry|13:50-15:20|94"
+  "P.E.|17:10-18:40|Hall 1"
 )
 
 schedule_fri_up=(
-  "Информатика|10:10-11:40|141"
-  "История|17:10-18:40|Вебинар"
-  "Биология|18:50-20:20|Вебинар"
+  "CS|10:10-11:40|141"
+  "History|17:10-18:40|Web"
+  "Biology|18:50-20:20|Web"
 )
 
 schedule_sat_up=(
 )
 
-# нижняя неделя
+# lower week
 schedule_mon_down=(
-  "Физика|10:10-11:40|234"
-  "Химия|11:50-13:20|234"
+  "Physics|10:10-11:40|234"
+  "Chemistry|11:50-13:20|234"
 )
 
 schedule_tue_down=(
-  "Физика|08:30-10:00|227"
-  "Физика|10:10-11:40|227"
-  "Физика|11:50-13:20|227"
-  "Химия|13:50-15:20|118"
-  "Физкультура|17:10-18:40|Зал 2"
+  "Physics|08:30-10:00|227"
+  "Physics|10:10-11:40|227"
+  "Physics|11:50-13:20|227"
+  "Chemistry|13:50-15:20|118"
+  "P.E.|17:10-18:40|Hall 2"
 )
 
 schedule_wed_down=(
-  "История|17:10-18:40|Вебинар"
+  "History|17:10-18:40|Web"
 )
 
 schedule_thu_down=(
-  "Математика|10:10-11:40|229"
-  "Математика|11:50-13:20|229"
-  "Химия|13:50-15:20|229"
-  "Физкультура|17:10-18:40|Зал 3"
+  "Math|10:10-11:40|229"
+  "Math|11:50-13:20|229"
+  "Chemistry|13:50-15:20|229"
+  "P.E.|17:10-18:40|Hall 3"
 )
 
 schedule_fri_down=(
-  "Информатика|10:10-11:40|421"
-  "История|17:10-18:40|Вебинар"
-  "История|18:50-20:20|Вебинар"
+  "CS|10:10-11:40|421"
+  "History|17:10-18:40|Web"
+  "History|18:50-20:20|Web"
 )
 
 schedule_sat_down=(
@@ -83,12 +84,12 @@ schedule_sat_down=(
 
 
 
-offset1=190 # Отступ от левого края до времени пары
-offset2=345 # Отступ от левого края до номера кабинета
+offset1=190 # Offset from left edge to class time
+offset2=345 # Offset from left edge to classroom number
 
-current_week="_down" # "_up" или "_down" или ""; Во многих вузах эта система называется "четная или нечетная неделя", я пока не придумал автосмену недели, нужно каждую неделю менять конфиг. Если у вас нет смены недель, используйте "".
+current_week="_down" # "_up" or "_down" or ""; In many universities this is called "even or odd week", I haven't come up with auto-switching yet, you need to manually change the config weekly. If you don’t have week switching, use "".
 
-# конец пользовательского конфига
+# End of user config
 
 day_code=$(LC_TIME=C date +%a | tr '[:upper:]' '[:lower:]')
 declare -A day_map=(
@@ -104,25 +105,25 @@ eval "current_schedule=(\"\${schedule_${day_map[$day_code]}$current_week[@]}\")"
 
 current_time=$(date +%H:%M)
 
-# Если расписание пустое (например, если нет занятий в этот день), выходим
+# If schedule is empty (e.g., no classes that day), exit
 if [ ${#current_schedule[@]} -eq 0 ]; then
   exit 0
 fi
 
-# Получаем последний элемент расписания
+# Get last schedule entry
 last_index=$((${#current_schedule[@]} - 1))
 last_entry="${current_schedule[$last_index]}"
 IFS='|' read -r _ last_time_range _ <<< "$last_entry"
 IFS='-' read -r _ last_end <<< "$last_time_range"
 
-# Если текущее время больше времени окончания последней пары, завершаем скрипт без вывода расписания
+# If current time is after the end of the last class, exit the script without output
 if [[ "$current_time" > "$last_end" ]]; then
   exit 0
 fi
 
 echo "\${hr}"
 prev_end=""
-echo "\${color}Предмет            Время          Кабинет \${color}"
+echo "\${color}Subject            Time           Room \${color}"
 for entry in "${current_schedule[@]}"; do
 
   IFS='|' read -r name time_range classroom <<< "$entry"
@@ -130,11 +131,11 @@ for entry in "${current_schedule[@]}"; do
   
 
   
-  # Если это не первая пара, проверяем, находится ли текущее время в периоде перемены
+  # If this is not the first class, check if current time is during the break
   if [[ -n "$prev_end" ]]; then
     if [[ "$current_time" > "$prev_end" && "$current_time" < "$start" ]]; then
-      # Вывод перемены
-      echo "\${color red}Перемена \${goto $offset1}$prev_end-$start\${color}"
+      # Show break
+      echo "\${color red}Break \${goto $offset1}$prev_end-$start\${color}"
     fi
   fi
 
@@ -146,3 +147,4 @@ for entry in "${current_schedule[@]}"; do
   prev_end="$end"
 done
 echo "\$hr"
+
